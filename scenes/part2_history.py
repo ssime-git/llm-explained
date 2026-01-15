@@ -69,7 +69,7 @@ class Slide13_HistoricalTimeline(LLMSlide):
             (2018, "GPT-1")
         ]
 
-        timeline_length = 10
+        timeline_length = 8
         timeline = Line(LEFT * timeline_length/2, RIGHT * timeline_length/2, color=WHITE)
         timeline.shift(DOWN)
 
@@ -232,7 +232,7 @@ class Slide16_TimelineContinued(LLMSlide):
         self.play(Write(innovation_text), run_time=0.7)
 
         # Timeline 2017-2023
-        timeline = Line(LEFT * 5, RIGHT * 5, color=WHITE).shift(DOWN * 0.5)
+        timeline = Line(LEFT * 4, RIGHT * 4, color=WHITE).shift(DOWN * 0.5)
         self.play(Create(timeline), run_time=0.4)
 
         events = [
@@ -246,7 +246,7 @@ class Slide16_TimelineContinued(LLMSlide):
         ]
 
         for year, name, color in events:
-            x = -5 + ((year - 2017) / 6) * 10
+            x = -4 + ((year - 2017) / 6) * 8
             point = Dot(color=color, radius=0.12).move_to([x, -0.5, 0])
             year_text = Text(str(year), font_size=TINY_FONT_SIZE, color=color)
             year_text.next_to(point, DOWN, buff=0.2)

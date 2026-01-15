@@ -14,7 +14,7 @@ To present:
     manim-slides present
 """
 
-# Part 1: Foundations & Prompt Engineering (Slides 1-11)
+# Part 1: Foundations & Prompt Engineering (Slides 1-10)
 from scenes.part1_foundations import (
     Slide1_TitleIntroduction,
     Slide2_CommunicationRules,
@@ -26,7 +26,6 @@ from scenes.part1_foundations import (
     Slide8_ContentCreationPrompts,
     Slide9_ChatGPTInternetAccess,
     Slide10_PartTransition,
-    Slide11_WooclapPlaceholder,
 )
 
 # Part 2: History, Definition & RNNs (Slides 12-20)
@@ -118,7 +117,6 @@ ALL_SCENES = [
     Slide8_ContentCreationPrompts,
     Slide9_ChatGPTInternetAccess,
     Slide10_PartTransition,
-    Slide11_WooclapPlaceholder,
     # Part 2
     Slide12_LLMDefinition,
     Slide13_HistoricalTimeline,

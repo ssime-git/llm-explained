@@ -221,13 +221,13 @@ class Slide40_ArchitectureSummary(LLMSlide):
         self.play(Write(title), run_time=0.5)
 
         # Simple architecture diagram
-        encoder_box = Rectangle(width=3, height=5, color=ACCENT_GREEN, stroke_width=4)
-        encoder_box.shift(LEFT * 3.5)
+        encoder_box = Rectangle(width=3, height=4, color=ACCENT_GREEN, stroke_width=4)
+        encoder_box.shift(LEFT * 3.5 + DOWN * 0.3)
         encoder_label = Text("ENCODER", font_size=HEADING_FONT_SIZE, color=ACCENT_GREEN, weight=BOLD)
         encoder_label.next_to(encoder_box, UP, buff=0.2)
 
-        decoder_box = Rectangle(width=3, height=5, color=ACCENT_ORANGE, stroke_width=4)
-        decoder_box.shift(RIGHT * 3.5)
+        decoder_box = Rectangle(width=3, height=4, color=ACCENT_ORANGE, stroke_width=4)
+        decoder_box.shift(RIGHT * 3.5 + DOWN * 0.3)
         decoder_label = Text("DECODER", font_size=HEADING_FONT_SIZE, color=ACCENT_ORANGE, weight=BOLD)
         decoder_label.next_to(decoder_box, UP, buff=0.2)
 

@@ -40,7 +40,7 @@ class LLMSlide(Slide):
         style = get_title_style()
         style['color'] = color
         self.title_obj = Text(title_text, **style)
-        self.title_obj.to_edge(UP, buff=0.5)
+        self.title_obj.to_edge(UP, buff=0.8)
 
         if subtitle_text:
             self.subtitle_obj = Text(subtitle_text, **get_subtitle_style())
