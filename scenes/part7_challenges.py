@@ -128,7 +128,7 @@ class Slide46_Hallucinations(LLMSlide):
 
 
 class Slide47_QuantizationQuestion(LLMSlide):
-    """Slide 47-50: Quantization (combined)"""
+    """Slide 47: Quantization Question"""
 
     def construct(self):
         title = self.add_title("Which number takes MORE space in memory?")
@@ -142,49 +142,74 @@ class Slide47_QuantizationQuestion(LLMSlide):
         optionB.shift(RIGHT * 3 + UP * 0.5)
 
         self.play(FadeIn(optionA), FadeIn(optionB), run_time=0.7)
-        self.wait(1)
-        self.next_slide()
-
-        # Answer
-        answer = Text("Answer: A) 1.2 takes MORE space!", font_size=HEADING_FONT_SIZE, color=ACCENT_GREEN, weight=BOLD)
-        answer.shift(DOWN * 0.5)
-
-        self.play(FadeIn(answer, scale=1.2), run_time=0.8)
-        self.wait(0.5)
-
-        # Explanation
-        explanation = Text(
-            "Floating-point numbers (FP16/FP32) require more bits\nthan integers (INT8)",
-            font_size=BODY_FONT_SIZE,
-            color=WHITE,
-            line_spacing=1.3
-        )
-        explanation.shift(DOWN * 1.8)
-
-        self.play(FadeIn(explanation), run_time=0.6)
         self.wait(PAUSE_TIME)
         self.next_slide()
 
-        # Quantization process
-        self.play(FadeOut(VGroup(optionA, optionB, answer, explanation)), run_time=0.3)
 
-        quant_title = Text("Quantization Process", font_size=HEADING_FONT_SIZE, color=ACCENT_CYAN, weight=BOLD)
-        quant_title.shift(UP * 2.5)
-        self.play(Write(quant_title), run_time=0.5)
+class Slide48_QuantizationAnswer(LLMSlide):
+    """Slide 48: Quantization Answer"""
+
+    def construct(self):
+        title = self.add_title("Answer: Floating-point takes more space!")
+        self.play(Write(title), run_time=0.5)
+
+        # Answer
+        answer = Text("A) 1.2 takes MORE space!", font_size=TITLE_FONT_SIZE, color=ACCENT_GREEN, weight=BOLD)
+        answer.shift(UP * 0.5)
+
+        self.play(FadeIn(answer, scale=1.2), run_time=0.8)
+        self.wait(0.3)
+
+        # Explanation
+        explanation = Text(
+            "Floating-point (FP16/FP32) requires more bits than integers (INT8)",
+            font_size=BODY_FONT_SIZE,
+            color=WHITE
+        )
+        explanation.shift(DOWN * 0.5)
+
+        self.play(FadeIn(explanation), run_time=0.6)
+
+        # Visual comparison
+        fp_box = Rectangle(width=4, height=0.8, color=ACCENT_CYAN, stroke_width=3)
+        fp_box.shift(DOWN * 1.5 + LEFT * 2.5)
+        fp_label = Text("FP16: 16 bits", font_size=SMALL_FONT_SIZE, color=WHITE)
+        fp_label.move_to(fp_box.get_center())
+
+        int_box = Rectangle(width=2, height=0.8, color=ACCENT_GREEN, stroke_width=3)
+        int_box.shift(DOWN * 1.5 + RIGHT * 1.5)
+        int_label = Text("INT8: 8 bits", font_size=SMALL_FONT_SIZE, color=WHITE)
+        int_label.move_to(int_box.get_center())
+
+        self.wait(0.3)
+        self.play(Create(fp_box), Write(fp_label), run_time=0.5)
+        self.wait(0.2)
+        self.play(Create(int_box), Write(int_label), run_time=0.5)
+
+        self.wait(PAUSE_TIME)
+        self.next_slide()
+
+
+class Slide49_QuantizationProcess(LLMSlide):
+    """Slide 49: Quantization Process"""
+
+    def construct(self):
+        title = self.add_title("Quantization Process")
+        self.play(Write(title), run_time=0.5)
 
         steps = [
             "1. Convert: 1.2 × 23.5 = 28.2 ≈ 28",
             "2. Store as INT8 (8 bits instead of 16)",
             "3. Convert back: 28 ÷ 23.5 = 1.19 ≈ 1.2",
-            "Result: 50% memory saved!"
+            "✓ Result: 50% memory saved!"
         ]
 
         step_objects = self.create_bullet_list(steps, font_size=BODY_FONT_SIZE)
-        step_objects.shift(DOWN * 0.2)
+        step_objects.shift(UP * 0.5)
 
         for step in step_objects:
-            self.play(FadeIn(step, shift=RIGHT), run_time=0.5)
-            self.wait(0.2)
+            self.play(FadeIn(step, shift=RIGHT), run_time=0.4)
+            self.wait(0.15)
 
         self.wait(PAUSE_TIME)
         self.next_slide()
