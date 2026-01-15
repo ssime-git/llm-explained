@@ -1,6 +1,6 @@
 """
 Part 6: Overall Architecture
-Slides 42-43: Complete transformer architecture
+Slides 42-43: Transformer architecture visualization
 """
 
 from manim import *
@@ -22,64 +22,119 @@ class Slide42_TransformerArchitecture(LLMSlide):
         title = self.add_title("Complete Transformer Architecture")
         self.play(Write(title), run_time=0.5)
 
-        # Stacked transformer blocks
-        num_blocks = 3
+        # Simplified architecture diagram
+        # Input
+        input_box = Rectangle(width=2, height=0.6, color=ACCENT_CYAN, stroke_width=3)
+        input_box.shift(LEFT * 4 + DOWN * 2.5)
+        input_label = Text("Input\nEmbedding", font_size=TINY_FONT_SIZE, color=WHITE)
+        input_label.move_to(input_box.get_center())
 
-        blocks = VGroup()
-        for i in range(num_blocks):
+        # Encoder stack
+        encoder_layers = VGroup()
+        for i in range(3):
             # Multi-head attention
-            mha = Rectangle(width=3, height=0.6, color=ACCENT_CYAN, stroke_width=2)
-            mha_text = Text("Multi-Head Attention", font_size=TINY_FONT_SIZE, color=WHITE)
-            mha_text.move_to(mha.get_center())
+            mha = Rectangle(width=2, height=0.5, color=ACCENT_GREEN, stroke_width=2, fill_opacity=0.2, fill_color=ACCENT_GREEN)
+            mha_label = Text("Multi-Head\nAttention", font_size=TINY_FONT_SIZE - 2, color=WHITE)
+            mha_label.scale(0.7).move_to(mha.get_center())
 
             # Feed forward
-            ff = Rectangle(width=3, height=0.6, color=ACCENT_ORANGE, stroke_width=2)
-            ff_text = Text("Feed Forward", font_size=TINY_FONT_SIZE, color=WHITE)
-            ff_text.move_to(ff.get_center())
+            ff = Rectangle(width=2, height=0.5, color=ACCENT_ORANGE, stroke_width=2, fill_opacity=0.2, fill_color=ACCENT_ORANGE)
+            ff_label = Text("Feed\nForward", font_size=TINY_FONT_SIZE - 2, color=WHITE)
+            ff_label.scale(0.7).move_to(ff.get_center())
 
-            # Add & Norm layers
-            norm1 = Rectangle(width=3, height=0.3, color=ACCENT_GREEN, stroke_width=1)
-            norm1_text = Text("Add & Norm", font_size=TINY_FONT_SIZE * 0.7, color=WHITE)
-            norm1_text.move_to(norm1.get_center())
+            layer = VGroup(VGroup(mha, mha_label), VGroup(ff, ff_label)).arrange(DOWN, buff=0.1)
+            encoder_layers.add(layer)
 
-            norm2 = Rectangle(width=3, height=0.3, color=ACCENT_GREEN, stroke_width=1)
-            norm2_text = Text("Add & Norm", font_size=TINY_FONT_SIZE * 0.7, color=WHITE)
-            norm2_text.move_to(norm2.get_center())
+        encoder_layers.arrange(DOWN, buff=0.2).scale(0.8)
+        encoder_layers.next_to(input_box, UP, buff=0.3)
 
-            block = VGroup(
-                VGroup(mha, mha_text),
-                VGroup(norm1, norm1_text),
-                VGroup(ff, ff_text),
-                VGroup(norm2, norm2_text)
-            ).arrange(DOWN, buff=0.1)
+        encoder_box = SurroundingRectangle(encoder_layers, color=ACCENT_GREEN, buff=0.2, stroke_width=3)
+        encoder_title = Text("ENCODER", font_size=BODY_FONT_SIZE, color=ACCENT_GREEN, weight=BOLD)
+        encoder_title.next_to(encoder_box, UP, buff=0.1)
 
-            blocks.add(block)
+        # Decoder stack
+        decoder_layers = VGroup()
+        for i in range(3):
+            # Masked multi-head attention
+            mmha = Rectangle(width=2, height=0.4, color=ACCENT_PURPLE, stroke_width=2, fill_opacity=0.2, fill_color=ACCENT_PURPLE)
+            mmha_label = Text("Masked MHA", font_size=TINY_FONT_SIZE - 4, color=WHITE)
+            mmha_label.scale(0.6).move_to(mmha.get_center())
 
-        blocks.arrange(DOWN, buff=0.3).scale(0.9).shift(DOWN * 0.2)
+            # Cross attention
+            ca = Rectangle(width=2, height=0.4, color=ACCENT_CYAN, stroke_width=2, fill_opacity=0.2, fill_color=ACCENT_CYAN)
+            ca_label = Text("Cross Attn", font_size=TINY_FONT_SIZE - 4, color=WHITE)
+            ca_label.scale(0.6).move_to(ca.get_center())
 
-        # Input and output
-        input_box = Rectangle(width=3, height=0.5, color=PRIMARY_BLUE, stroke_width=3)
-        input_text = Text("Input Embeddings", font_size=SMALL_FONT_SIZE, color=WHITE)
-        input_text.move_to(input_box.get_center())
-        input_group = VGroup(input_box, input_text)
-        input_group.next_to(blocks, UP, buff=0.3)
+            # Feed forward
+            ff = Rectangle(width=2, height=0.4, color=ACCENT_ORANGE, stroke_width=2, fill_opacity=0.2, fill_color=ACCENT_ORANGE)
+            ff_label = Text("Feed Fwd", font_size=TINY_FONT_SIZE - 4, color=WHITE)
+            ff_label.scale(0.6).move_to(ff.get_center())
 
-        output_box = Rectangle(width=3, height=0.5, color=ACCENT_PURPLE, stroke_width=3)
-        output_text = Text("Output Probabilities", font_size=SMALL_FONT_SIZE, color=WHITE)
-        output_text.move_to(output_box.get_center())
-        output_group = VGroup(output_box, output_text)
-        output_group.next_to(blocks, DOWN, buff=0.3)
+            layer = VGroup(
+                VGroup(mmha, mmha_label),
+                VGroup(ca, ca_label),
+                VGroup(ff, ff_label)
+            ).arrange(DOWN, buff=0.05)
+            decoder_layers.add(layer)
+
+        decoder_layers.arrange(DOWN, buff=0.15).scale(0.7)
+        decoder_layers.shift(RIGHT * 3.5)
+
+        decoder_box = SurroundingRectangle(decoder_layers, color=ACCENT_ORANGE, buff=0.2, stroke_width=3)
+        decoder_title = Text("DECODER", font_size=BODY_FONT_SIZE, color=ACCENT_ORANGE, weight=BOLD)
+        decoder_title.next_to(decoder_box, UP, buff=0.1)
+
+        # Output
+        output_box = Rectangle(width=2, height=0.6, color=ACCENT_CYAN, stroke_width=3)
+        output_box.next_to(decoder_layers, DOWN, buff=0.3)
+        output_label = Text("Output\nProbabilities", font_size=TINY_FONT_SIZE, color=WHITE)
+        output_label.move_to(output_box.get_center())
+
+        # Connections
+        enc_to_dec = Arrow(
+            encoder_box.get_right(),
+            decoder_box.get_left(),
+            color=ACCENT_CYAN,
+            stroke_width=3
+        )
 
         # Animate
-        self.play(FadeIn(input_group), run_time=0.5)
+        self.wait(0.2)
+        self.play(FadeIn(VGroup(input_box, input_label)), run_time=0.4)
         self.wait(0.2)
 
-        for block in blocks:
-            self.play(FadeIn(block, shift=UP), run_time=0.4)
-            self.wait(0.1)
+        self.play(
+            Create(encoder_box),
+            Write(encoder_title),
+            FadeIn(encoder_layers),
+            run_time=0.8
+        )
+        self.wait(0.3)
 
+        self.play(GrowArrow(enc_to_dec), run_time=0.5)
         self.wait(0.2)
-        self.play(FadeIn(output_group), run_time=0.5)
+
+        self.play(
+            Create(decoder_box),
+            Write(decoder_title),
+            FadeIn(decoder_layers),
+            run_time=0.8
+        )
+        self.wait(0.3)
+
+        self.play(FadeIn(VGroup(output_box, output_label)), run_time=0.4)
+
+        # Key components note
+        note = Text(
+            "Each layer includes:\n• Attention mechanism\n• Normalization\n• Residual connections",
+            font_size=SMALL_FONT_SIZE,
+            color=ACCENT_YELLOW,
+            line_spacing=1.2
+        )
+        note.to_edge(DOWN, buff=0.5)
+
+        self.wait(0.3)
+        self.play(FadeIn(note), run_time=0.5)
 
         self.wait(PAUSE_TIME)
         self.next_slide()

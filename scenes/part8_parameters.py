@@ -1,6 +1,6 @@
 """
 Part 8: API Parameters
-Slides 56-60: Temperature, top-p, top-k, system prompts
+Slides 56-60: Temperature, top-p, top-k, system prompts, Hugging Face
 """
 
 from manim import *
@@ -29,54 +29,66 @@ class Slide56_TemperatureParameter(LLMSlide):
             font_size=BODY_FONT_SIZE,
             color=ACCENT_CYAN
         )
-        definition.shift(UP * 2.5)
+        definition.shift(UP * 2.2)
         self.play(Write(definition), run_time=0.7)
 
-        # Low temperature
-        low_temp = Text("Low Temperature (< 1)", font_size=HEADING_FONT_SIZE, color=PRIMARY_BLUE, weight=BOLD)
-        low_temp.shift(LEFT * 3.5 + UP * 1)
+        # Low temperature visualization
+        low_temp_label = Text("Low Temperature\n(T < 1)", font_size=BODY_FONT_SIZE, color=ACCENT_GREEN, weight=BOLD, line_spacing=1.2)
+        low_temp_label.shift(LEFT * 4 + UP * 0.8)
 
-        low_desc = Text(
-            "Deterministic\nLess variation\nMore predictable",
+        low_temp_desc = Text(
+            "Deterministic\nLess variation",
             font_size=SMALL_FONT_SIZE,
             color=WHITE,
             line_spacing=1.2
         )
-        low_desc.next_to(low_temp, DOWN, buff=0.3)
+        low_temp_desc.next_to(low_temp_label, DOWN, buff=0.3)
 
-        # High temperature
-        high_temp = Text("High Temperature (> 1)", font_size=HEADING_FONT_SIZE, color=ACCENT_ORANGE, weight=BOLD)
-        high_temp.shift(RIGHT * 3.5 + UP * 1)
+        # High temperature visualization
+        high_temp_label = Text("High Temperature\n(T > 1)", font_size=BODY_FONT_SIZE, color=ACCENT_ORANGE, weight=BOLD, line_spacing=1.2)
+        high_temp_label.shift(RIGHT * 4 + UP * 0.8)
 
-        high_desc = Text(
-            "Creative\nMore variation\nLess predictable",
+        high_temp_desc = Text(
+            "Creative\nMore variation",
             font_size=SMALL_FONT_SIZE,
             color=WHITE,
             line_spacing=1.2
         )
-        high_desc.next_to(high_temp, DOWN, buff=0.3)
+        high_temp_desc.next_to(high_temp_label, DOWN, buff=0.3)
 
-        # Visualization curves
-        axes = Axes(
-            x_range=[0, 5, 1],
-            y_range=[0, 1, 0.2],
-            x_length=3,
-            y_length=1.5,
-            tips=False
-        )
+        # Visual representation (probability bars)
+        # Low temp - peaked distribution
+        low_bars = VGroup(*[
+            Rectangle(
+                width=0.3,
+                height=[0.5, 3.0, 0.8, 0.3, 0.2][i],
+                fill_opacity=0.8,
+                fill_color=ACCENT_GREEN,
+                stroke_width=1,
+                stroke_color=WHITE
+            ).shift(DOWN * 1.5 + LEFT * 4 + RIGHT * i * 0.4)
+            for i in range(5)
+        ])
 
-        # Low temp curve (sharp peak)
-        low_curve = axes.plot(lambda x: np.exp(-((x-2)**2)*5), color=PRIMARY_BLUE)
-        low_axes = VGroup(axes.copy(), low_curve).shift(LEFT * 3.5 + DOWN * 1.5).scale(0.8)
-
-        # High temp curve (flat distribution)
-        high_curve = axes.plot(lambda x: 0.5 + 0.1*np.sin(x), color=ACCENT_ORANGE)
-        high_axes = VGroup(axes.copy(), high_curve).shift(RIGHT * 3.5 + DOWN * 1.5).scale(0.8)
+        # High temp - flat distribution
+        high_bars = VGroup(*[
+            Rectangle(
+                width=0.3,
+                height=[1.5, 1.8, 1.6, 1.4, 1.3][i],
+                fill_opacity=0.8,
+                fill_color=ACCENT_ORANGE,
+                stroke_width=1,
+                stroke_color=WHITE
+            ).shift(DOWN * 1.5 + RIGHT * 4 + RIGHT * i * 0.4)
+            for i in range(5)
+        ])
 
         self.wait(0.3)
-        self.play(FadeIn(VGroup(low_temp, low_desc, low_axes), shift=RIGHT), run_time=0.7)
+        self.play(FadeIn(VGroup(low_temp_label, low_temp_desc), shift=RIGHT), run_time=0.6)
+        self.play(FadeIn(low_bars), run_time=0.5)
         self.wait(0.3)
-        self.play(FadeIn(VGroup(high_temp, high_desc, high_axes), shift=LEFT), run_time=0.7)
+        self.play(FadeIn(VGroup(high_temp_label, high_temp_desc), shift=LEFT), run_time=0.6)
+        self.play(FadeIn(high_bars), run_time=0.5)
 
         self.wait(PAUSE_TIME)
         self.next_slide()
@@ -95,15 +107,15 @@ class Slide57_TopPSampling(LLMSlide):
             font_size=BODY_FONT_SIZE,
             color=ACCENT_CYAN
         )
-        definition.shift(UP * 2.5)
+        definition.shift(UP * 2.2)
         self.play(Write(definition), run_time=0.7)
 
-        # Example: "The cat ___"
-        example = Text('"The cat ___"', font_size=HEADING_FONT_SIZE, color=WHITE, weight=BOLD)
-        example.shift(UP * 1.5)
-        self.play(Write(example), run_time=0.5)
+        # Example
+        example_label = Text('Example: "The cat"', font_size=HEADING_FONT_SIZE, color=WHITE, weight=BOLD)
+        example_label.shift(UP * 1.2)
+        self.play(Write(example_label), run_time=0.5)
 
-        # Probability distribution
+        # Probability table
         words_probs = [
             ("meows", 0.30),
             ("sleeps", 0.25),
@@ -112,45 +124,44 @@ class Slide57_TopPSampling(LLMSlide):
             ("is", 0.05)
         ]
 
-        # Calculate cumulative
-        cumsum = 0
+        cumulative = 0
         prob_rows = VGroup()
-
         for word, prob in words_probs:
-            cumsum += prob
-            color = ACCENT_GREEN if cumsum <= 0.8 else LIGHT_GRAY
+            cumulative += prob
 
-            word_text = Text(word, font_size=BODY_FONT_SIZE, color=color, weight=BOLD)
-            prob_text = Text(f"{prob:.2f}", font_size=SMALL_FONT_SIZE, color=color)
-            cumsum_text = Text(f"({cumsum:.2f})", font_size=TINY_FONT_SIZE, color=color)
+            word_text = Text(word, font_size=SMALL_FONT_SIZE, color=WHITE)
+            prob_text = Text(f"{prob:.2f}", font_size=SMALL_FONT_SIZE, color=ACCENT_CYAN)
+            cumul_text = Text(f"Σ={cumulative:.2f}", font_size=SMALL_FONT_SIZE, color=ACCENT_ORANGE)
 
-            bar = Rectangle(
-                width=prob * 8,
-                height=0.25,
-                fill_opacity=0.8,
-                fill_color=color,
-                stroke_width=0
-            )
+            # Highlight if within top-p=0.8
+            if cumulative <= 0.8:
+                color = ACCENT_GREEN
+                check = Text("✓", font_size=SMALL_FONT_SIZE, color=color)
+            else:
+                color = ACCENT_RED
+                check = Text("✗", font_size=SMALL_FONT_SIZE, color=color)
 
-            row = VGroup(word_text, bar, prob_text, cumsum_text).arrange(RIGHT, buff=0.2)
+            row = VGroup(word_text, prob_text, cumul_text, check).arrange(RIGHT, buff=0.5)
             prob_rows.add(row)
 
-        prob_rows.arrange(DOWN, aligned_edge=LEFT, buff=0.15).shift(DOWN * 0.2)
+        prob_rows.arrange(DOWN, aligned_edge=LEFT, buff=0.2).shift(DOWN * 0.3)
 
         # Threshold line
-        threshold_line = DashedLine(LEFT * 5, RIGHT * 5, color=ACCENT_ORANGE, stroke_width=3)
-        threshold_line.shift(DOWN + UP * 0.5)
-
-        threshold_label = Text("top_p = 0.8", font_size=BODY_FONT_SIZE, color=ACCENT_ORANGE, weight=BOLD)
-        threshold_label.next_to(threshold_line, RIGHT, buff=0.2)
+        threshold_text = Text(
+            "If top_p = 0.8, only first 3 tokens considered",
+            font_size=BODY_FONT_SIZE,
+            color=ACCENT_YELLOW,
+            weight=BOLD
+        )
+        threshold_text.to_edge(DOWN, buff=0.8)
 
         self.wait(0.3)
         for row in prob_rows:
             self.play(FadeIn(row), run_time=0.3)
-            self.wait(0.05)
+            self.wait(0.1)
 
         self.wait(0.3)
-        self.play(Create(threshold_line), Write(threshold_label), run_time=0.6)
+        self.play(FadeIn(threshold_text), run_time=0.5)
 
         self.wait(PAUSE_TIME)
         self.next_slide()
@@ -165,29 +176,29 @@ class Slide58_TopKSampling(LLMSlide):
 
         # Definition
         definition = Text(
-            "Limits selection to the k most probable tokens",
-            font_size=BODY_FONT_SIZE,
+            "Limits selection to k most probable tokens",
+            font_size=HEADING_FONT_SIZE,
             color=ACCENT_CYAN
         )
-        definition.shift(UP * 2.5)
+        definition.shift(UP * 2.2)
         self.play(Write(definition), run_time=0.7)
 
         # Analogy
         analogy = Text(
-            'Like choosing only the top candies from a jar 🍬',
+            "Like choosing only from the top candies in a jar",
             font_size=BODY_FONT_SIZE,
             color=ACCENT_YELLOW
         )
-        analogy.shift(UP * 1.7)
-        self.play(FadeIn(analogy), run_time=0.5)
+        analogy.shift(UP * 1.3)
+        self.play(FadeIn(analogy), run_time=0.6)
 
-        # Example with k=2
-        example = Text('If top_k = 2: "The cat ___"', font_size=HEADING_FONT_SIZE, color=WHITE)
-        example.shift(UP * 0.8)
-        self.play(Write(example), run_time=0.5)
+        # Example
+        example_label = Text("If top_k = 2:", font_size=HEADING_FONT_SIZE, color=WHITE, weight=BOLD)
+        example_label.shift(UP * 0.3)
+        self.play(Write(example_label), run_time=0.5)
 
-        # Words
-        words = [
+        # Token list
+        tokens = [
             ("meows", 0.30, True),
             ("sleeps", 0.25, True),
             ("eats", 0.24, False),
@@ -195,81 +206,106 @@ class Slide58_TopKSampling(LLMSlide):
             ("is", 0.05, False)
         ]
 
-        word_rows = VGroup()
-        for word, prob, included in words:
-            color = ACCENT_GREEN if included else DARK_GRAY
-            opacity = 1.0 if included else 0.3
+        token_objects = VGroup()
+        for word, prob, included in tokens:
+            word_text = Text(word, font_size=BODY_FONT_SIZE, color=WHITE)
+            prob_text = Text(f"{prob:.2f}", font_size=BODY_FONT_SIZE, color=ACCENT_CYAN)
 
-            word_text = Text(word, font_size=BODY_FONT_SIZE, color=color, weight=BOLD)
-            prob_text = Text(f"{prob:.2f}", font_size=SMALL_FONT_SIZE, color=color)
-            status = Text("✓" if included else "✗", font_size=HEADING_FONT_SIZE, color=color)
+            if included:
+                status = Text("✓ Included", font_size=SMALL_FONT_SIZE, color=ACCENT_GREEN, weight=BOLD)
+                row_color = ACCENT_GREEN
+            else:
+                status = Text("✗ Excluded", font_size=SMALL_FONT_SIZE, color=ACCENT_RED)
+                row_color = ACCENT_RED
 
             row = VGroup(word_text, prob_text, status).arrange(RIGHT, buff=0.5)
-            row.set_opacity(opacity)
-            word_rows.add(row)
+            box = SurroundingRectangle(row, color=row_color, buff=0.15, stroke_width=2)
 
-        word_rows.arrange(DOWN, aligned_edge=LEFT, buff=0.2).shift(DOWN * 0.3)
+            token_objects.add(VGroup(box, row))
 
-        for row in word_rows:
-            self.play(FadeIn(row), run_time=0.3)
+        token_objects.arrange(DOWN, buff=0.2).shift(DOWN * 1)
+
+        for token_obj in token_objects:
+            self.play(FadeIn(token_obj), run_time=0.3)
             self.wait(0.05)
+
+        # Note
+        note = Text(
+            "Pros: More coherent | Cons: Less creative",
+            font_size=SMALL_FONT_SIZE,
+            color=ACCENT_ORANGE
+        )
+        note.to_edge(DOWN, buff=0.8)
+
+        self.wait(0.3)
+        self.play(FadeIn(note), run_time=0.5)
 
         self.wait(PAUSE_TIME)
         self.next_slide()
 
 
 class Slide59_SystemPrompt(LLMSlide):
-    """Slide 59: System Prompt"""
+    """Slide 59: System Prompt (Metaprompt)"""
 
     def construct(self):
         title = self.add_title("System Prompt (Metaprompt)")
         self.play(Write(title), run_time=0.5)
 
-        # Properties
-        properties = Text(
-            "• Valid for entire conversation\n• Not visible to end user\n• Set by LLM, not modifiable",
+        # Definition
+        definition = Text(
+            "Sets behavior parameters for the entire conversation",
             font_size=BODY_FONT_SIZE,
-            color=ACCENT_CYAN,
-            line_spacing=1.3
+            color=ACCENT_CYAN
         )
-        properties.shift(UP * 1.8)
-        self.play(FadeIn(properties), run_time=0.7)
+        definition.shift(UP * 2.2)
+        self.play(Write(definition), run_time=0.7)
+
+        # Key properties
+        properties = [
+            "✓ Valid for entire conversation",
+            "✓ Not visible to end user",
+            "✓ Set by LLM provider"
+        ]
+
+        prop_objects = self.create_bullet_list(properties, font_size=BODY_FONT_SIZE)
+        prop_objects.shift(UP * 0.8)
+
+        for prop in prop_objects:
+            self.play(FadeIn(prop, shift=RIGHT), run_time=0.4)
+            self.wait(0.1)
 
         # Example
         example_label = Text("Example:", font_size=HEADING_FONT_SIZE, color=ACCENT_ORANGE, weight=BOLD)
-        example_label.shift(UP * 0.3)
+        example_label.shift(DOWN * 0.3)
 
-        example_box = Rectangle(
+        example_code = """You are a friendly and helpful assistant.
+Answer questions concisely and clearly."""
+
+        code_box = Rectangle(
             width=10,
-            height=1.5,
+            height=1.2,
             fill_opacity=0.9,
             fill_color=DARK_GRAY,
             stroke_color=ACCENT_GREEN,
             stroke_width=2
         )
-        example_box.shift(DOWN * 0.5)
-
-        example_text = Text(
-            '"You are a friendly and helpful assistant.\nAnswer questions concisely and clearly."',
-            font_size=SMALL_FONT_SIZE,
-            color=WHITE,
-            line_spacing=1.3,
-            font="Monospace"
-        )
-        example_text.move_to(example_box.get_center())
+        code_text = Text(example_code, font_size=SMALL_FONT_SIZE, color=WHITE, line_spacing=1.3, font="Monospace")
+        code_text.move_to(code_box.get_center())
+        code_group = VGroup(code_box, code_text)
+        code_group.next_to(example_label, DOWN, buff=0.3)
 
         self.wait(0.3)
         self.play(Write(example_label), run_time=0.5)
         self.wait(0.2)
-        self.play(Create(example_box), Write(example_text), run_time=0.7)
+        self.play(FadeIn(code_group), run_time=0.6)
 
         # Additional parameters
         params = Text(
             "Other parameters: max_tokens, model, role",
-            font_size=BODY_FONT_SIZE,
-            color=LIGHT_GRAY
+            font_size=SMALL_FONT_SIZE,
+            color=ACCENT_YELLOW
         )
-        params.to_edge(DOWN, buff=1)
+        params.to_edge(DOWN, buff=0.8)
 
         self.wait(0.3)
         self.play(FadeIn(params), run_time=0.5)
@@ -282,39 +318,75 @@ class Slide60_HuggingFaceIntro(CodeSlide):
     """Slide 60: Hugging Face Introduction"""
 
     def construct(self):
-        title = self.add_title("Hugging Face Platform")
+        title = self.add_title("Hugging Face: LLM Toolkit")
         self.play(Write(title), run_time=0.5)
 
-        # Features
+        # Key features
         features = [
-            "🤗 Open-source library (BERT, GPT, T5, LLaMA...)",
-            "📚 10,000+ datasets for NLP, vision, audio",
-            "☁️ Cloud API for using models without local GPU"
+            "🤗 Open-source transformers library",
+            "📚 10,000+ datasets (NLP, vision, audio)",
+            "☁️ Cloud API (no local GPU needed)"
         ]
 
         feature_objects = self.create_bullet_list(features, font_size=BODY_FONT_SIZE)
-        feature_objects.shift(UP * 1.5)
+        feature_objects.shift(UP * 1.8)
 
         for feature in feature_objects:
             self.play(FadeIn(feature, shift=RIGHT), run_time=0.4)
             self.wait(0.1)
 
         # Code example
-        code = '''from transformers import pipeline
+        code_example = """from transformers import pipeline
 
 model_name = "facebook/opt-1.3b"
 generator = pipeline("text-generation", 
-                     model=model_name)
+                    model=model_name)
 
-output = generator("AI is transforming",
-                   max_length=50)
-print(output[0]['generated_text'])'''
+prompt = "AI is transforming the world because"
+output = generator(prompt, max_length=50)
+print(output[0]['generated_text'])"""
 
-        code_block = self.create_code_block(code, language="python", title="Example Usage")
-        code_block.scale(0.7).shift(DOWN * 0.8)
+        code_label = Text("Example:", font_size=HEADING_FONT_SIZE, color=ACCENT_ORANGE, weight=BOLD)
+        code_label.shift(UP * 0.2)
+
+        code_box = Rectangle(
+            width=11,
+            height=3,
+            fill_opacity=0.95,
+            fill_color=DARK_GRAY,
+            stroke_color=ACCENT_GREEN,
+            stroke_width=3
+        )
+        code_text = Text(
+            code_example,
+            font_size=TINY_FONT_SIZE + 2,
+            color=ACCENT_GREEN,
+            line_spacing=1.2,
+            font="Monospace"
+        )
+        code_text.move_to(code_box.get_center())
+
+        if code_text.width > code_box.width * 0.95:
+            code_text.scale((code_box.width * 0.95) / code_text.width)
+
+        code_group = VGroup(code_box, code_text)
+        code_group.next_to(code_label, DOWN, buff=0.3)
 
         self.wait(0.3)
-        self.play(FadeIn(code_block), run_time=0.8)
+        self.play(Write(code_label), run_time=0.5)
+        self.wait(0.2)
+        self.play(FadeIn(code_group), run_time=0.7)
+
+        # Note
+        note = Text(
+            "Visit: huggingface.co",
+            font_size=BODY_FONT_SIZE,
+            color=ACCENT_CYAN
+        )
+        note.to_edge(DOWN, buff=0.8)
+
+        self.wait(0.3)
+        self.play(FadeIn(note), run_time=0.5)
 
         self.wait(PAUSE_TIME)
         self.next_slide()
