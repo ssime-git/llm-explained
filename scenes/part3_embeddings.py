@@ -102,48 +102,64 @@ class Slide22_EmbeddingsDefinition(LLMSlide):
             self.play(FadeIn(concept), run_time=0.4)
             self.wait(0.1)
 
-        # 3D visualization example
-        axes = ThreeDAxes(
-            x_range=[-5, 15],
-            y_range=[-5, 15],
-            z_range=[-5, 15],
-            x_length=4,
-            y_length=4,
-            z_length=4
+        # 2D visualization of vector space (simplified)
+        # Create a simple 2D representation
+        axes = Axes(
+            x_range=[-5, 15, 5],
+            y_range=[-5, 15, 5],
+            x_length=5,
+            y_length=5,
+            axis_config={"color": WHITE}
         )
-        axes.shift(DOWN * 1.5 + LEFT * 2)
+        axes.shift(DOWN * 1 + LEFT * 2)
 
-        # Example vectors
-        dog_point = Dot3D([10, 3, 2], color=PRIMARY_BLUE, radius=0.1)
-        cat_point = Dot3D([10, 3, 1], color=PRIMARY_BLUE, radius=0.1)
-        skateboard_point = Dot3D([-3, 3, 2], color=ACCENT_RED, radius=0.1)
+        # Add axis labels
+        x_label = Text("Dimension 1", font_size=TINY_FONT_SIZE, color=WHITE)
+        x_label.next_to(axes.x_axis, DOWN, buff=0.2)
+        y_label = Text("Dimension 2", font_size=TINY_FONT_SIZE, color=WHITE)
+        y_label.next_to(axes.y_axis, LEFT, buff=0.2)
+
+        # Example vectors (using 2D coordinates)
+        dog_point = Dot(axes.c2p(10, 3), color=PRIMARY_BLUE, radius=0.12)
+        cat_point = Dot(axes.c2p(10, 2), color=PRIMARY_BLUE, radius=0.12)
+        skateboard_point = Dot(axes.c2p(-3, 3), color=ACCENT_RED, radius=0.12)
 
         dog_label = Text("dog", font_size=TINY_FONT_SIZE, color=PRIMARY_BLUE)
-        dog_label.move_to(axes.c2p(10, 3, 2) + RIGHT * 0.3)
+        dog_label.next_to(dog_point, RIGHT, buff=0.1)
 
         cat_label = Text("cat", font_size=TINY_FONT_SIZE, color=PRIMARY_BLUE)
-        cat_label.move_to(axes.c2p(10, 3, 1) + RIGHT * 0.3)
+        cat_label.next_to(cat_point, RIGHT, buff=0.1)
 
         skateboard_label = Text("skateboard", font_size=TINY_FONT_SIZE, color=ACCENT_RED)
-        skateboard_label.move_to(axes.c2p(-3, 3, 2) + LEFT * 0.5)
+        skateboard_label.next_to(skateboard_point, LEFT, buff=0.1)
+
+        # Similarity line between dog and cat
+        similarity_line = Line(dog_point.get_center(), cat_point.get_center(), color=ACCENT_GREEN, stroke_width=2)
+        similarity_text = Text("Similar", font_size=TINY_FONT_SIZE, color=ACCENT_GREEN)
+        similarity_text.next_to(similarity_line, RIGHT, buff=0.1)
 
         # Note
         note = Text(
-            "GPT-4: 3072 dimensions!",
+            "GPT-4 uses 3072 dimensions!\n(Shown here in 2D for simplicity)",
             font_size=SMALL_FONT_SIZE,
-            color=ACCENT_YELLOW
+            color=ACCENT_YELLOW,
+            line_spacing=1.2
         )
-        note.to_edge(RIGHT).shift(DOWN)
+        note.to_edge(RIGHT).shift(DOWN * 0.5)
 
         self.wait(0.3)
-        self.add_fixed_in_frame_mobjects(axes)
-        self.play(Create(axes), run_time=0.5)
+        self.play(Create(axes), Write(x_label), Write(y_label), run_time=0.6)
+        self.wait(0.2)
         self.play(
             FadeIn(dog_point), FadeIn(dog_label),
             FadeIn(cat_point), FadeIn(cat_label),
-            FadeIn(skateboard_point), FadeIn(skateboard_label),
-            run_time=0.8
+            run_time=0.5
         )
+        self.wait(0.2)
+        self.play(Create(similarity_line), FadeIn(similarity_text), run_time=0.4)
+        self.wait(0.2)
+        self.play(FadeIn(skateboard_point), FadeIn(skateboard_label), run_time=0.4)
+        self.wait(0.2)
         self.play(FadeIn(note), run_time=0.4)
 
         self.wait(PAUSE_TIME)
