@@ -1,42 +1,184 @@
-from manim import *
-from manim_slides import Slide
+"""
+LLM Explained - Interactive Presentation
+Complete presentation on Large Language Models
 
+This file imports all slide scenes from the different parts and makes them available for rendering.
 
-class Introduction(Slide):
-    def construct(self):
-        welcome = Text("This is the Manim Slides starter")
-        square = Square(color=BLUE)
-        dot = Dot(color=RED).shift(RIGHT + UP)
+To render all slides:
+    manim slides.py -qh
 
-        self.play(FadeIn(welcome))
-        self.next_slide()
+To render specific scenes:
+    manim slides.py Slide1_TitleIntroduction -qh
 
-        self.wipe(welcome, square)
-        self.play(FadeIn(dot))
+To present:
+    manim-slides present
+"""
 
-        self.next_slide(loop=True)
-        self.play(
-            MoveAlongPath(dot, square, rate_func=linear), run_time=2
-        )
+# Part 1: Foundations & Prompt Engineering (Slides 1-11)
+from scenes.part1_foundations import (
+    Slide1_TitleIntroduction,
+    Slide2_CommunicationRules,
+    Slide3_CourseSummary,
+    Slide4_PromptEngineering,
+    Slide5_PromptComponents,
+    Slide6_ComponentsExample,
+    Slide7_PromptBestPractices,
+    Slide8_ContentCreationPrompts,
+    Slide9_ChatGPTInternetAccess,
+    Slide10_PartTransition,
+    Slide11_WooclapPlaceholder,
+)
 
-class WithTeX(Slide):
-    def construct(self):
-        tex, text = VGroup(
-            Tex(r"You can also use \TeX, e.g., $\cos\theta=1$"),
-            Text("which does not render like plain text"),
-        ).arrange(DOWN)
+# Part 2: History, Definition & RNNs (Slides 12-20)
+from scenes.part2_history import (
+    Slide12_LLMDefinition,
+    Slide13_HistoricalTimeline,
+    Slide14_RNNIntroduction,
+    Slide15_RNNSequential,
+    Slide16_TimelineContinued,
+    Slide17_UseCases,
+    Slide18_ToolsArchitectureTitle,
+    Slide19_NLPSteps,
+    Slide20_Word2VecIntroduction,
+)
 
-        self.play(FadeIn(tex))
-        self.next_slide()
+# Part 3: Text-to-Vector Conversion (Slides 21-28)
+from scenes.part3_embeddings import (
+    Slide21_TokensDefinition,
+    Slide22_EmbeddingsDefinition,
+    Slide23_EmbeddingsGeneration,
+    Slide24_Word2VecTraditional,
+    Slide25_Word2VecMethods,
+    Slide26_TransformerEmbeddings,
+    Slide27_BatDisambiguation,
+    Slide28_AttentionIntroduction,
+)
 
-        self.play(FadeIn(text, shift=DOWN))
+# Part 4: Attention Mechanism (Slides 29-31)
+from scenes.part4_attention import (
+    Slide29_MultiHeadAttention,
+    Slide30_AttentionMechanismDeep,
+    Slide31_GroupedQueryAttention,
+)
 
+# Part 5: Text Generation Process (Slides 32-41)
+from scenes.part5_generation import (
+    Slide32_TextGenerationTitle,
+    Slide33_ProbabilityBasedGeneration,
+    Slide34_EmbeddingPositionalEncoding,
+    Slide35_QueryKeyValue,
+    Slide40_ArchitectureSummary,
+    Slide41_PredictionLayer,
+)
 
-class Outro(Slide):
-    def construct(self):
-        learn_more = VGroup(
-            Text("Learn more about Manim Slides:"),
-            Text("https://manim-slides.eertmans.be"),
-        ).arrange(DOWN)
+# Part 6: Overall Architecture (Slides 42-43)
+from scenes.part6_architecture import (
+    Slide42_TransformerArchitecture,
+)
 
-        self.play(FadeIn(learn_more))
+# Part 7: LLM Challenges & Solutions (Slides 44-55)
+from scenes.part7_challenges import (
+    Slide44_ChallengesTitle,
+    Slide45_ChallengesOverview,
+    Slide46_Hallucinations,
+    Slide47_QuantizationQuestion,
+    Slide51_CostsAnalysis,
+    Slide52_PromptInjection,
+    Slide53_RLHF,
+)
+
+# Part 8: API Parameters (Slides 56-60)
+from scenes.part8_parameters import (
+    Slide56_TemperatureParameter,
+    Slide57_TopPSampling,
+    Slide58_TopKSampling,
+    Slide59_SystemPrompt,
+    Slide60_HuggingFaceIntro,
+)
+
+# Part 9: Hugging Face & Conclusion (Slides 61-65)
+from scenes.part9_huggingface import (
+    Slide61_DemoPlaceholder,
+    Slide62_ConclusionTitle,
+    Slide63_QuestionsAndFeedback,
+    Slide64_NextDates,
+    Slide65_ThankYou,
+)
+
+# List of all scenes in order
+ALL_SCENES = [
+    # Part 1
+    Slide1_TitleIntroduction,
+    Slide2_CommunicationRules,
+    Slide3_CourseSummary,
+    Slide4_PromptEngineering,
+    Slide5_PromptComponents,
+    Slide6_ComponentsExample,
+    Slide7_PromptBestPractices,
+    Slide8_ContentCreationPrompts,
+    Slide9_ChatGPTInternetAccess,
+    Slide10_PartTransition,
+    Slide11_WooclapPlaceholder,
+    # Part 2
+    Slide12_LLMDefinition,
+    Slide13_HistoricalTimeline,
+    Slide14_RNNIntroduction,
+    Slide15_RNNSequential,
+    Slide16_TimelineContinued,
+    Slide17_UseCases,
+    Slide18_ToolsArchitectureTitle,
+    Slide19_NLPSteps,
+    Slide20_Word2VecIntroduction,
+    # Part 3
+    Slide21_TokensDefinition,
+    Slide22_EmbeddingsDefinition,
+    Slide23_EmbeddingsGeneration,
+    Slide24_Word2VecTraditional,
+    Slide25_Word2VecMethods,
+    Slide26_TransformerEmbeddings,
+    Slide27_BatDisambiguation,
+    Slide28_AttentionIntroduction,
+    # Part 4
+    Slide29_MultiHeadAttention,
+    Slide30_AttentionMechanismDeep,
+    Slide31_GroupedQueryAttention,
+    # Part 5
+    Slide32_TextGenerationTitle,
+    Slide33_ProbabilityBasedGeneration,
+    Slide34_EmbeddingPositionalEncoding,
+    Slide35_QueryKeyValue,
+    Slide40_ArchitectureSummary,
+    Slide41_PredictionLayer,
+    # Part 6
+    Slide42_TransformerArchitecture,
+    # Part 7
+    Slide44_ChallengesTitle,
+    Slide45_ChallengesOverview,
+    Slide46_Hallucinations,
+    Slide47_QuantizationQuestion,
+    Slide51_CostsAnalysis,
+    Slide52_PromptInjection,
+    Slide53_RLHF,
+    # Part 8
+    Slide56_TemperatureParameter,
+    Slide57_TopPSampling,
+    Slide58_TopKSampling,
+    Slide59_SystemPrompt,
+    Slide60_HuggingFaceIntro,
+    # Part 9
+    Slide61_DemoPlaceholder,
+    Slide62_ConclusionTitle,
+    Slide63_QuestionsAndFeedback,
+    Slide64_NextDates,
+    Slide65_ThankYou,
+]
+
+# Scene names for command-line rendering
+SCENE_NAMES = [scene.__name__ for scene in ALL_SCENES]
+
+if __name__ == "__main__":
+    print(f"LLM Explained Presentation - {len(ALL_SCENES)} slides")
+    print("\nTo render all scenes:")
+    print("  manim slides.py -qh " + " ".join(SCENE_NAMES[:3]) + " ...")
+    print("\nTo convert to HTML:")
+    print("  manim-slides convert " + " ".join(SCENE_NAMES[:3]) + " index.html")

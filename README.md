@@ -1,89 +1,260 @@
-# Manim Slides Starter
+# LLM Explained: Interactive Presentation
 
 [![Deploy static content to Pages](../../actions/workflows/deploy_pages.yml/badge.svg)](../../actions/workflows/deploy_pages.yml)
 
-Starter template for Manim Slides presentations and GitHub Pages deployment!
+An interactive, animated presentation about **Large Language Models (LLMs)** and their text generation process, built with [Manim Slides](https://manim-slides.eertmans.be/) and automatically deployed to GitHub Pages.
 
-## Who is this template for?
+## 🎯 About
 
-This template is for people that would like to share their Manim Slides
-presentation with others, anywhere on the internet.
+This presentation transforms complex LLM concepts into engaging, step-by-step visualizations covering:
 
-## How to use this template?
+- **Prompt Engineering** - Best practices for creating effective prompts
+- **History & Evolution** - From MLPs to Transformers and GPT
+- **Tokenization & Embeddings** - How text becomes vectors
+- **Attention Mechanism** - The core of modern LLMs
+- **Text Generation** - Complete generation pipeline
+- **Transformer Architecture** - Encoder-decoder structure
+- **Challenges & Solutions** - Hallucinations, quantization, costs
+- **API Parameters** - Temperature, top-p, top-k sampling
+- **Practical Tools** - Hugging Face and deployment
 
-This template contains two important files:
+## 📊 Presentation Structure
 
-+ [`slides.py`](./slides.py);
-+ and [`deploy_pages.yml`](./.github/workflows/deploy_pages.yml);
+The presentation consists of **65 slides** organized into **9 parts**:
 
-The former contains the logic to animate your slides, while the
-second defines a number of steps to render your slides into a
-portable presentation format, and publish it on the internet.
-It uses [GitHub actions](https://github.com/features/actions)
-and
-[GitHub pages](https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages)
-which are free for public repositories.
+| Part | Slides | Topic |
+|------|--------|-------|
+| 1 | 1-11 | Foundations & Prompt Engineering |
+| 2 | 12-20 | History, Definition & RNNs |
+| 3 | 21-28 | Text-to-Vector Conversion |
+| 4 | 29-31 | Attention Mechanism |
+| 5 | 32-41 | Text Generation Process |
+| 6 | 42-43 | Overall Architecture |
+| 7 | 44-55 | LLM Challenges & Solutions |
+| 8 | 56-60 | API Parameters |
+| 9 | 61-65 | Hugging Face & Conclusion |
 
-### Creating a new repository
+## 🚀 Quick Start
 
-First, you need to create a new repository by clicking on the
-[*Use this template*](https://github.com/new?template_name=manim-slides-starter&template_owner=jeertmans)
-button.
+### View Online
 
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/jeertmans/manim-slides-starter/assets/27275099/dabb51b9-77f1-45e7-833b-d53c8af0a7d0">
-    <source media="(prefers-color-scheme: light)" srcset="https://github.com/jeertmans/manim-slides-starter/assets/27275099/75045605-fce0-46d0-98e0-8a85cec907cb">
-    <img width="65%" alt="Creating a new repository from this template" src="https://github.com/jeertmans/manim-slides-starter/assets/27275099/75045605-fce0-46d0-98e0-8a85cec907cb">
-  </picture>
-</p>
+The presentation is automatically deployed to GitHub Pages:
 
-> [!NOTE]
-> If you want to have a private repository, you will probably need
-> a GitHub Pro account to run the GitHub action.
+🔗 **[View Live Presentation](#)** _(will be available after first deployment)_
 
-### Customizing your presentation
+### Local Development
 
-By default, the generated presentation is obtained from the
-[`slides.py`](./slides.py) file, uses Manim Community Edition,
-and renders the following scenes: `Introduction`, `WithTeX`,
-ans `Outro`.
+**Prerequisites:**
+- Python 3.9+
+- LaTeX distribution (for mathematical formulas)
+- FFmpeg
 
-Of course, you can update or create Python files to
-generate your animations. If you require a specific
-version of `manim-slides`, `manim` or `manimlib`,
-please edit [`requirements.txt`](./requirements.txt).
+**Setup:**
 
-Additionally, you can edit the following environ variables
-to reflect your changes:
+```bash
+# Clone the repository
+git clone https://github.com/YOUR_USERNAME/llm-explained.git
+cd llm-explained
 
-https://github.com/jeertmans/manim-slides-starter/blob/d9799748b124c71626175de8d156c8010bf6f68d/.github/workflows/deploy_pages.yml#L19-L23
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-> [!WARNING]
-> `manimgl` is currently not supported, as rendering animations
-> inside GitHub workflows seems complex...
+# Install dependencies
+pip install -r requirements.txt
+```
 
-Last, if you want to change the scenes rendering and the HTML
-conversion, feel free to edit the last two lines:
+**Render Slides:**
 
-https://github.com/jeertmans/manim-slides-starter/blob/d9799748b124c71626175de8d156c8010bf6f68d/.github/workflows/deploy_pages.yml#L93-L96
+```bash
+# Render all slides (high quality)
+manim slides.py -qh Slide1_TitleIntroduction Slide2_CommunicationRules ...
 
-## Where is the output?
+# Render specific part (e.g., Part 1)
+manim scenes/part1_foundations.py -qh Slide1_TitleIntroduction
 
-On every commit to the `main` branch, a new deployment action should be
-triggered. If that is not the case, inspect the [actions](../../actions) tab for
-any error message. You can also manually trigger a deployment by clicking on
-the [*Run workflow*](../../actions/workflows/deploy_pages.yml) button.
+# Quick preview (low quality, faster)
+manim slides.py -ql Slide1_TitleIntroduction
+```
 
-If everything goes well, the deploying site should be on your
-personal GitHub pages site: `https://<username>.github.io/<repository_name>`.
+**Present Locally:**
 
-For example, this starter's website is:
-https://jeertmans.github.io/manim-slides-starter.
+```bash
+# Convert to HTML
+manim-slides convert Slide1_TitleIntroduction Slide2_CommunicationRules ... index.html
 
-> [!NOTE]
-> The first time the deployment action is used,
-> the `gh-pages` branch is created. You might need
-> to go to [`Settings -> Pages`](../../settings/pages)
-> and make sure that the *Source* is
-> *Deploy from a branch*, and *branch* is *gh-pages*.
+# Interactive presentation (Qt)
+manim-slides present
+```
+
+## 📁 Project Structure
+
+```
+llm-explained/
+├── .github/
+│   └── workflows/
+│       └── deploy_pages.yml      # GitHub Actions deployment
+├── scenes/
+│   ├── part1_foundations.py      # Slides 1-11
+│   ├── part2_history.py          # Slides 12-20
+│   ├── part3_embeddings.py       # Slides 21-28
+│   ├── part4_attention.py        # Slides 29-31
+│   ├── part5_generation.py       # Slides 32-41
+│   ├── part6_architecture.py     # Slides 42-43
+│   ├── part7_challenges.py       # Slides 44-55
+│   ├── part8_parameters.py       # Slides 56-60
+│   ├── part9_huggingface.py      # Slides 61-65
+│   └── __init__.py
+├── assets/
+│   ├── images/                   # Image assets
+│   ├── data/                     # Data for visualizations
+│   └── styles/
+│       └── theme_config.py       # Colors, fonts, styling
+├── utils/
+│   ├── custom_scenes.py          # Base scene classes
+│   ├── animations.py             # Reusable animations
+│   ├── data_generators.py        # Data generation utilities
+│   └── __init__.py
+├── slides.py                     # Main presentation file
+├── requirements.txt              # Python dependencies
+├── README.md                     # This file
+└── LICENSE.md                    # MIT License
+```
+
+## 🎨 Key Features
+
+### Mathematical Visualizations
+- Step-by-step formula derivations
+- Attention score calculations
+- Probability distributions
+- Matrix operations (Q, K, V)
+
+### Interactive Elements
+- Timeline animations (1960-2023 ML history)
+- 3D embedding space visualization
+- RNN sequential processing
+- Transformer architecture diagrams
+
+### Code Examples
+- Python code with syntax highlighting
+- Hugging Face transformers usage
+- API parameter demonstrations
+
+### Educational Design
+- Progressive disclosure of information
+- Color-coded concepts
+- Clear visual hierarchy
+- Consistent styling throughout
+
+## 🛠️ Technologies Used
+
+- **[Manim Community Edition](https://www.manim.community/)** - Mathematical animation engine
+- **[Manim Slides](https://manim-slides.eertmans.be/)** - Slide-based presentation framework
+- **[GitHub Actions](https://github.com/features/actions)** - Automated rendering and deployment
+- **[GitHub Pages](https://pages.github.com/)** - Free hosting
+- **Python 3.9+** - Programming language
+- **LaTeX** - Mathematical typesetting
+
+## 🔧 Configuration
+
+### Rendering Quality
+
+Edit quality settings in individual scene files or use command-line flags:
+
+```bash
+-ql   # Low quality (854x480, 15 fps) - Fast preview
+-qm   # Medium quality (1280x720, 30 fps)
+-qh   # High quality (1920x1080, 60 fps) - Production
+-qk   # 4K quality (3840x2160, 60 fps)
+```
+
+### Theme Customization
+
+Modify colors and styling in `assets/styles/theme_config.py`:
+
+```python
+# Primary colors
+PRIMARY_BLUE = "#1F77B4"
+ACCENT_CYAN = "#17BECF"
+ACCENT_ORANGE = "#FF7F0E"
+# ... and more
+```
+
+### GitHub Actions
+
+The deployment workflow is configured in `.github/workflows/deploy_pages.yml`. Key settings:
+
+- **FILE**: `slides.py` (source file)
+- **MANIM**: `manim` (renderer to use)
+- **SCENES**: Space-separated list of all scene names
+- **USES_TEX**: `true` (enable LaTeX support)
+
+## 📚 Content Overview
+
+### Part 1: Prompt Engineering
+Learn the essential components of effective prompts: task, context, example, personality, format, and tone. Includes real-world examples and best practices.
+
+### Part 2: History & RNNs
+Explore the evolution from MLPs to Transformers, understand Recurrent Neural Networks, and discover major milestones in NLP history.
+
+### Part 3: Embeddings
+Deep dive into tokenization, vector representations, Word2Vec (CBOW & Skip-gram), and modern context-aware embeddings with Transformers.
+
+### Part 4: Attention Mechanism
+Understand the core innovation behind modern LLMs: multi-head attention, semantic relationships, and Grouped Query Attention (GQA).
+
+### Part 5: Text Generation
+Complete walkthrough of the generation pipeline: positional encoding, Q-K-V matrices, attention scores, softmax, and probability prediction.
+
+### Part 6: Architecture
+Visual breakdown of the complete Transformer architecture with encoder-decoder structure and layer-by-layer explanation.
+
+### Part 7: Challenges
+Address real-world issues: hallucinations, prompt injection, quantization techniques (FP16 to INT8), environmental costs, and RLHF training.
+
+### Part 8: API Parameters
+Master temperature, top-p (nucleus sampling), top-k sampling, and system prompts for controlling LLM behavior.
+
+### Part 9: Tools & Conclusion
+Practical introduction to Hugging Face, code demonstrations, and next steps for continued learning.
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to:
+
+- Report bugs or suggest improvements via [Issues](../../issues)
+- Submit pull requests with enhancements
+- Add new slides or visualizations
+- Improve documentation
+
+**Development workflow:**
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/new-slide`
+3. Make changes and test locally: `manim your_scene.py -ql YourScene`
+4. Commit with clear messages: `git commit -m "Add attention mechanism visualization"`
+5. Push and create a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+
+## 🙏 Acknowledgments
+
+- **Manim Community** - For the incredible animation framework
+- **Jérome Eertmans** - Creator of Manim Slides
+- **DataScientest** - Original LLM course content inspiration
+- **Open Source Community** - For all the tools and libraries
+
+## 📞 Contact
+
+For questions, suggestions, or collaboration:
+
+- **Issues**: [GitHub Issues](../../issues)
+- **Discussions**: [GitHub Discussions](../../discussions)
+
+---
+
+**Built with ❤️ using Manim Slides**
+
+*Transform complex concepts into beautiful, interactive presentations*

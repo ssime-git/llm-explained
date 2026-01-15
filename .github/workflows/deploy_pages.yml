@@ -19,7 +19,7 @@ concurrency:
 env:
   FILE: 'slides.py'  # Source file where scenes are defined
   MANIM: 'manim'  # manim or manimgl - which Manim renderer to use
-  SCENES: 'Introduction WithTeX Outro'  # Space-separated list of scenes to render
+  SCENES: 'Slide1_TitleIntroduction Slide2_CommunicationRules Slide3_CourseSummary Slide4_PromptEngineering Slide5_PromptComponents Slide6_ComponentsExample Slide7_PromptBestPractices Slide8_ContentCreationPrompts Slide9_ChatGPTInternetAccess Slide10_PartTransition Slide11_WooclapPlaceholder Slide12_LLMDefinition Slide13_HistoricalTimeline Slide14_RNNIntroduction Slide15_RNNSequential Slide16_TimelineContinued Slide17_UseCases Slide18_ToolsArchitectureTitle Slide19_NLPSteps Slide20_Word2VecIntroduction Slide21_TokensDefinition Slide22_EmbeddingsDefinition Slide23_EmbeddingsGeneration Slide24_Word2VecTraditional Slide25_Word2VecMethods Slide26_TransformerEmbeddings Slide27_BatDisambiguation Slide28_AttentionIntroduction Slide29_MultiHeadAttention Slide30_AttentionMechanismDeep Slide31_GroupedQueryAttention Slide32_TextGenerationTitle Slide33_ProbabilityBasedGeneration Slide34_EmbeddingPositionalEncoding Slide35_QueryKeyValue Slide40_ArchitectureSummary Slide41_PredictionLayer Slide42_TransformerArchitecture Slide44_ChallengesTitle Slide45_ChallengesOverview Slide46_Hallucinations Slide47_QuantizationQuestion Slide48_QuantizationAnswer Slide49_QuantizationProcess Slide51_CostsAnalysis Slide52_PromptInjection Slide53_RLHF Slide56_TemperatureParameter Slide57_TopPSampling Slide58_TopKSampling Slide59_SystemPrompt Slide60_HuggingFaceIntro Slide61_DemoPlaceholder Slide62_ConclusionTitle Slide63_QuestionsAndFeedback Slide64_NextDates Slide65_ThankYou'  # Space-separated list of scenes to render
   USES_TEX: true  # true or false - disabling this will make the action run faster
   DISPLAY: :99  # Do not touch this
 
@@ -92,9 +92,44 @@ jobs:
     - name: Install Python dependencies
       run: pip install -r requirements.txt
 
-    - name: Build HTML
+    - name: Render Part 1 - Foundations
       run: |
-        ${{ env.MANIM }} ${{ env.FILE }} ${{ env.SCENES }}
+        manim scenes/part1_foundations.py Slide1_TitleIntroduction Slide2_CommunicationRules Slide3_CourseSummary Slide4_PromptEngineering Slide5_PromptComponents Slide6_ComponentsExample Slide7_PromptBestPractices Slide8_ContentCreationPrompts Slide9_ChatGPTInternetAccess Slide10_PartTransition Slide11_WooclapPlaceholder
+
+    - name: Render Part 2 - History
+      run: |
+        manim scenes/part2_history.py Slide12_LLMDefinition Slide13_HistoricalTimeline Slide14_RNNIntroduction Slide15_RNNSequential Slide16_TimelineContinued Slide17_UseCases Slide18_ToolsArchitectureTitle Slide19_NLPSteps Slide20_Word2VecIntroduction
+
+    - name: Render Part 3 - Embeddings
+      run: |
+        manim scenes/part3_embeddings.py Slide21_TokensDefinition Slide22_EmbeddingsDefinition Slide23_EmbeddingsGeneration Slide24_Word2VecTraditional Slide25_Word2VecMethods Slide26_TransformerEmbeddings Slide27_BatDisambiguation Slide28_AttentionIntroduction
+
+    - name: Render Part 4 - Attention
+      run: |
+        manim scenes/part4_attention.py Slide29_MultiHeadAttention Slide30_AttentionMechanismDeep Slide31_GroupedQueryAttention
+
+    - name: Render Part 5 - Generation
+      run: |
+        manim scenes/part5_generation.py Slide32_TextGenerationTitle Slide33_ProbabilityBasedGeneration Slide34_EmbeddingPositionalEncoding Slide35_QueryKeyValue Slide40_ArchitectureSummary Slide41_PredictionLayer
+
+    - name: Render Part 6 - Architecture
+      run: |
+        manim scenes/part6_architecture.py Slide42_TransformerArchitecture
+
+    - name: Render Part 7 - Challenges
+      run: |
+        manim scenes/part7_challenges.py Slide44_ChallengesTitle Slide45_ChallengesOverview Slide46_Hallucinations Slide47_QuantizationQuestion Slide48_QuantizationAnswer Slide49_QuantizationProcess Slide51_CostsAnalysis Slide52_PromptInjection Slide53_RLHF
+
+    - name: Render Part 8 - Parameters
+      run: |
+        manim scenes/part8_parameters.py Slide56_TemperatureParameter Slide57_TopPSampling Slide58_TopKSampling Slide59_SystemPrompt Slide60_HuggingFaceIntro
+
+    - name: Render Part 9 - Conclusion
+      run: |
+        manim scenes/part9_huggingface.py Slide61_DemoPlaceholder Slide62_ConclusionTitle Slide63_QuestionsAndFeedback Slide64_NextDates Slide65_ThankYou
+
+    - name: Convert to HTML
+      run: |
         manim-slides convert ${{ env.SCENES }} _site/index.html
 
     - name: Push to gh-pages branch
