@@ -36,7 +36,10 @@ class LLMSlide(Slide):
         Returns:
             VGroup containing title elements
         """
-        self.title_obj = Text(title_text, **get_title_style(), color=color)
+        # Get style and override color
+        style = get_title_style()
+        style['color'] = color
+        self.title_obj = Text(title_text, **style)
         self.title_obj.to_edge(UP, buff=0.5)
 
         if subtitle_text:
